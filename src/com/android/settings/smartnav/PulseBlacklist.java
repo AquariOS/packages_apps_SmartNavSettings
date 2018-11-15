@@ -40,8 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import com.bootleggers.dumpster.preferences.PackageListAdapter;
-import com.bootleggers.dumpster.preferences.PackageListAdapter.PackageItem;
+import com.aquarios.support.preferences.PackageListAdapter;
+import com.aquarios.support.preferences.PackageListAdapter.PackageItem;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 
@@ -66,6 +66,8 @@ public class PulseBlacklist extends SettingsPreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pulse_blacklist);
+
+        getActivity().getActionBar().setTitle(R.string.pulse_blacklist_title);
         initializeAllPreferences();
     }
 
@@ -99,7 +101,7 @@ public class PulseBlacklist extends SettingsPreferenceFragment implements
     public int getDialogMetricsCategory(int dialogId) {
         switch (dialogId) {
             case DIALOG_BLACKLIST_APPS:
-                return MetricsProto.MetricsEvent.BOOTLEG;
+                return MetricsProto.MetricsEvent.AQUA;
             default:
                 return 0;
         }
@@ -123,7 +125,7 @@ public class PulseBlacklist extends SettingsPreferenceFragment implements
 
     @Override
     public int getMetricsCategory() {
-        return MetricsProto.MetricsEvent.BOOTLEG;
+        return MetricsProto.MetricsEvent.AQUA;
     }
 
     @Override
