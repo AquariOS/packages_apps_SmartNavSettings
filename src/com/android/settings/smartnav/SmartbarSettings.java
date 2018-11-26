@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.UserHandle;
 import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 import android.provider.Settings;
@@ -69,6 +70,7 @@ public class SmartbarSettings extends SettingsPreferenceFragment implements
     private ListPreference mButtonLongpressDelay;
     private CustomSeekBarPreference mButtonsAlpha;
     private CustomSeekBarPreference mCustomButtonScaling;
+    private PreferenceScreen mPixel;
 
     private static final int MENU_RESET = Menu.FIRST;
     private static final int MENU_SAVE = Menu.FIRST + 1;
@@ -85,6 +87,7 @@ public class SmartbarSettings extends SettingsPreferenceFragment implements
     private static final String KEY_SMARTBAR_RESTORE = "smartbar_profile_restore";
     private static final String PREF_NAVBAR_BUTTONS_ALPHA = "navbar_buttons_alpha";
     private static final String PREF_SMARTBAR_CUSTOM_ICON_SIZE = "smartbar_custom_icon_size";
+    private static final String PIXEL = "pixel_anim";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,7 @@ public class SmartbarSettings extends SettingsPreferenceFragment implements
         addPreferencesFromResource(R.xml.smartbar_settings);
 
         mFooterPreferenceMixin.createFooterPreference().setTitle(R.string.smartbar_help_policy_notice_summary);
+        mPixel = (PreferenceScreen) findPreference(PIXEL);
 
         int contextVal = Settings.Secure.getIntForUser(getContentResolver(),
                 "smartbar_context_menu_mode", 0, UserHandle.USER_CURRENT);
@@ -131,6 +135,7 @@ public class SmartbarSettings extends SettingsPreferenceFragment implements
         mCustomButtonScaling.setValue(size);
         mCustomButtonScaling.setOnPreferenceChangeListener(this);
 
+        updateAnimDurationPref(buttonAnimVal);
 
         setHasOptionsMenu(true);
     }
@@ -274,6 +279,7 @@ public class SmartbarSettings extends SettingsPreferenceFragment implements
             int val = Integer.parseInt(((String) newValue).toString());
             Settings.Secure.putInt(getContentResolver(), "smartbar_button_animation_style",
                     val);
+            updateAnimDurationPref(val);
             return true;
         } else if (preference.equals(mImeActions)) {
             int val = Integer.parseInt(((String) newValue).toString());
@@ -446,6 +452,14 @@ public class SmartbarSettings extends SettingsPreferenceFragment implements
             list.add(tmp);
         }
         return list;
+    }
+
+    public void updateAnimDurationPref(int buttonAnimVal) {
+         if (buttonAnimVal == 0 || buttonAnimVal == 1 || buttonAnimVal == 2) {
+             mPixel.setEnabled(false);
+         } else {
+             mPixel.setEnabled(true);
+         }
     }
 
     @Override
