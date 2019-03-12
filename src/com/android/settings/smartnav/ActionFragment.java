@@ -20,8 +20,6 @@
 package com.android.settings.smartnav;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.utils.ActionConstants.Defaults;
@@ -57,7 +55,6 @@ public class ActionFragment extends SettingsPreferenceFragment implements
     private ShortcutPickHelper mPicker;
     protected ArrayList<ActionPreference> mPrefHolder;
     protected String mHolderTag;
-    protected Map<String, ArrayList<String>> mActionBlackList = new HashMap<String, ArrayList<String>>();
     private Defaults mDefaults;
     private ArrayList<ButtonConfig> mButtons;
     private ArrayList<ButtonConfig> mDefaultButtons;
@@ -145,12 +142,6 @@ public class ActionFragment extends SettingsPreferenceFragment implements
                     adapter.removeAction(ActionHandler.SYSTEMUI_TASK_HOME);
                     adapter.removeAction(ActionHandler.SYSTEMUI_TASK_BACK);
                 }
-                ArrayList<String> blacklist = mActionBlackList.get(mHolderTag);
-                if (blacklist != null && !blacklist.isEmpty()) {
-                    for (String toRemove : blacklist) {
-                        adapter.removeAction(toRemove);
-                    }
-                }
                 final DialogInterface.OnClickListener customActionClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
@@ -195,13 +186,6 @@ public class ActionFragment extends SettingsPreferenceFragment implements
     }
 
     /**
-     * Allow each ActionPreference to specify actions to remove from the action picker
-     */
-    protected ArrayList<String> getActionBlackListForPreference(String key) {
-        return null;
-    }
-
-    /**
      * load our button lists and ActionPreferences map button action targets from preference keys
      * and defaults config maps subclass is required to set desired Defaults interface int
      * ActionContants
@@ -221,14 +205,6 @@ public class ActionFragment extends SettingsPreferenceFragment implements
                 }
             } else if (pref instanceof ActionPreference) {
                 mPrefHolder.add((ActionPreference) pref);
-            }
-        }
-        // load blacklists after we have loaded action preferences
-        for (ActionPreference pref : mPrefHolder) {
-            String key = pref.getKey();
-            ArrayList<String> blacklist = getActionBlackListForPreference(key);
-            if (blacklist != null && !blacklist.isEmpty()) {
-                mActionBlackList.put(key, blacklist);
             }
         }
         loadAndSetConfigs();
